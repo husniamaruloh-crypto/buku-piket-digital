@@ -1,0 +1,6 @@
+{
+  "name": "Aplikasi Buku Piket Sekolah Digital - SMP Negeri 2 Serang Baru",
+  "description": "Aplikasi Buku Piket Sekolah Digital untuk absensi kegiatan mengajar guru, tenaga kependidikan, absensi siswa, jadwal pelajaran matriks, laporan bulanan, cetak F4, dan sinkronisasi Google Spreadsheet.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
