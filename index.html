@@ -123,6 +123,10 @@
         @media print {
             @page {
                 size: 330mm 215mm;
+                margin: 6mm 8mm;
+            }
+            @page coverPage {
+                size: 330mm 215mm;
                 margin: 0mm;
             }
             html, body {
@@ -142,6 +146,7 @@
             }
             #f4CoverPrintPage {
                 display: none !important;
+                page: coverPage;
                 position: relative !important;
                 width: 330mm !important;
                 height: 214.5mm !important;
@@ -174,9 +179,9 @@
             #mainPiketWrapper {
                 display: block !important;
                 max-width: 100% !important;
-                width: 330mm !important;
+                width: 100% !important;
                 margin: 0 !important;
-                padding: 4mm 6mm !important;
+                padding: 0 !important;
             }
             .print-container {
                 box-shadow: none !important;
@@ -190,19 +195,19 @@
             #printableSheet .lg\:grid-cols-12 {
                 display: grid !important;
                 grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-                gap: 3mm !important;
+                gap: 2.5mm !important;
+            }
+            #printableSheet .lg\:grid-cols-12.items-start {
+                grid-template-columns: 36% minmax(0, 1fr) !important;
             }
             #printableSheet .lg\:col-span-5 {
-                grid-column: span 5 / span 5 !important;
+                grid-column: 1 / 2 !important;
             }
             #printableSheet .lg\:col-span-6 {
-                grid-column: span 6 / span 6 !important;
+                grid-column: span 8 / span 8 !important;
             }
             #printableSheet .lg\:col-span-7 {
-                grid-column: span 7 / span 7 !important;
-            }
-            #mainPiketWrapper {
-                padding: 2.5mm 4.5mm !important;
+                grid-column: 2 / 3 !important;
             }
             #printableSheet .mb-12 {
                 margin-bottom: 6mm !important;
@@ -236,15 +241,22 @@
                 font-size: 6pt !important;
             }
             .piket-table th, .piket-table td {
-                padding: 0.25mm 0.55mm !important;
+                padding: 0.25mm 0.45mm !important;
                 line-height: 1.02 !important;
             }
+            td.siswa-nama-cell,
+            td:has(.siswa-nama),
             .siswa-nama.siswa-display-cell {
                 max-width: none !important;
-                font-size: 5.8pt !important;
+                font-size: 5.3pt !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                line-height: 1.04 !important;
             }
             .siswa-ket.siswa-display-cell {
-                font-size: 5.8pt !important;
+                font-size: 5.6pt !important;
             }
             select {
                 -webkit-appearance: none;
@@ -1596,7 +1608,7 @@
                 bodyHtml += `<tr><td class="text-center font-medium">${r}</td>`;
                 classList.forEach(cls => {
                     bodyHtml += `
-                        <td><span class="siswa-display-cell siswa-nama" data-kelas="${cls}" data-val=""></span></td>
+                        <td class="siswa-nama-cell"><span class="siswa-display-cell siswa-nama" data-kelas="${cls}" data-val=""></span></td>
                         <td class="text-center"><span class="siswa-display-cell siswa-ket text-center font-bold" data-kelas="${cls}" data-val=""></span></td>
                     `;
                 });
@@ -3212,12 +3224,16 @@
             });
             clone.querySelectorAll('.lg\\:grid-cols-12').forEach(el => {
                 el.style.display = 'grid';
-                el.style.gridTemplateColumns = 'repeat(12, minmax(0, 1fr))';
+                if (el.querySelector('#tabelGuru')) {
+                    el.style.gridTemplateColumns = '36% minmax(0, 1fr)';
+                } else {
+                    el.style.gridTemplateColumns = 'repeat(12, minmax(0, 1fr))';
+                }
                 el.style.gap = '10px';
             });
-            clone.querySelectorAll('.lg\\:col-span-5').forEach(el => { el.style.gridColumn = 'span 5 / span 5'; });
+            clone.querySelectorAll('.lg\\:col-span-5').forEach(el => { el.style.gridColumn = '1 / 2'; });
             clone.querySelectorAll('.lg\\:col-span-6').forEach(el => { el.style.gridColumn = 'span 6 / span 6'; });
-            clone.querySelectorAll('.lg\\:col-span-7').forEach(el => { el.style.gridColumn = 'span 7 / span 7'; });
+            clone.querySelectorAll('.lg\\:col-span-7').forEach(el => { el.style.gridColumn = '2 / 3'; });
             const pGuru = clone.querySelector('#tabelGuru');
             if (pGuru) {
                 pGuru.style.tableLayout = 'fixed';
@@ -3225,17 +3241,18 @@
                 cg.innerHTML = `
                     <col style="width:3.5%">
                     <col style="width:24.5%">
-                    <col style="width:15%">
-                    <col style="width:3.5%"><col style="width:3.5%"><col style="width:3.5%">
-                    <col style="width:3.5%"><col style="width:3.5%"><col style="width:3.5%">
-                    <col style="width:3.5%"><col style="width:3.5%"><col style="width:3.5%">
-                    <col style="width:4.5%">
-                    <col style="width:5%">
-                    <col style="width:5%">
-                    <col style="width:11%">
+                    <col style="width:14.5%">
+                    <col style="width:3.3%"><col style="width:3.3%"><col style="width:3.3%">
+                    <col style="width:3.3%"><col style="width:3.3%"><col style="width:3.3%">
+                    <col style="width:3.3%"><col style="width:3.3%"><col style="width:3.3%">
+                    <col style="width:4.3%">
+                    <col style="width:4.8%">
+                    <col style="width:6%">
+                    <col style="width:12.7%">
                 `;
                 pGuru.prepend(cg);
             }
+            applySiswaPrintColgroups(clone);
             target.innerHTML = '';
             target.appendChild(clone);
             const boxWidth = document.getElementById('sheetPreviewBox')?.clientWidth || 420;
@@ -3243,6 +3260,30 @@
             target.style.transform = `scale(${scale})`;
             target.style.width = '1120px';
             target.style.height = `${Math.round(clone.scrollHeight * scale)}px`;
+        }
+
+        function applySiswaPrintColgroups(container) {
+            ['#tabelSiswa1', '#tabelSiswa2'].forEach(sel => {
+                const tbl = container.querySelector(sel);
+                if (!tbl) return;
+                const oldCg = tbl.querySelector('colgroup');
+                if (oldCg) oldCg.remove();
+                const classCount = tbl.querySelectorAll('thead tr:last-child th .siswa-nama, thead tr:last-child th').length / 2;
+                const count = Math.floor(classCount);
+                if (count <= 0) return;
+                tbl.style.tableLayout = 'fixed';
+                tbl.style.width = '100%';
+                const noW = 2.4;
+                const ketW = 2.4;
+                const namaW = Number((((100 - noW) / count) - ketW).toFixed(2));
+                const cg = document.createElement('colgroup');
+                let colsHtml = `<col style="width:${noW}%">`;
+                for (let i = 0; i < count; i++) {
+                    colsHtml += `<col style="width:${namaW}%"><col style="width:${ketW}%">`;
+                }
+                cg.innerHTML = colsHtml;
+                tbl.prepend(cg);
+            });
         }
 
         function updateCoverPreviewText() {
@@ -3298,14 +3339,14 @@
                 cg.innerHTML = `
                     <col style="width:3.5%">
                     <col style="width:24.5%">
-                    <col style="width:15%">
-                    <col style="width:3.5%"><col style="width:3.5%"><col style="width:3.5%">
-                    <col style="width:3.5%"><col style="width:3.5%"><col style="width:3.5%">
-                    <col style="width:3.5%"><col style="width:3.5%"><col style="width:3.5%">
-                    <col style="width:4.5%">
-                    <col style="width:5%">
-                    <col style="width:5%">
-                    <col style="width:11%">
+                    <col style="width:14.5%">
+                    <col style="width:3.3%"><col style="width:3.3%"><col style="width:3.3%">
+                    <col style="width:3.3%"><col style="width:3.3%"><col style="width:3.3%">
+                    <col style="width:3.3%"><col style="width:3.3%"><col style="width:3.3%">
+                    <col style="width:4.3%">
+                    <col style="width:4.8%">
+                    <col style="width:6%">
+                    <col style="width:12.7%">
                 `;
                 tGuru.prepend(cg);
             }
@@ -3323,6 +3364,8 @@
                 `;
                 tStaf.prepend(cg);
             }
+
+            applySiswaPrintColgroups(sheetClone);
 
             const headStyles = Array.from(document.querySelectorAll('head style'))
                 .map(s => s.outerHTML)
@@ -3353,7 +3396,15 @@ ${headStyles}
 <style>
     @page {
         size: 330mm 215mm;
+        margin: 6mm 8mm;
+    }
+    @page coverPage {
+        size: 330mm 215mm;
         margin: 0mm;
+    }
+    @page sheetPage {
+        size: 330mm 215mm;
+        margin: 6mm 8mm;
     }
     * { box-sizing: border-box; }
     html, body {
@@ -3392,6 +3443,7 @@ ${headStyles}
     .btn-close-tab:hover { background: #475569; }
 
     .f4-cover-page {
+        page: coverPage;
         position: relative;
         width: 330mm;
         height: 214.5mm;
@@ -3431,10 +3483,11 @@ ${headStyles}
     }
 
     .f4-sheet-page {
-        width: 330mm;
-        min-height: 214.5mm;
+        page: sheetPage;
+        width: 314mm;
+        min-height: 202mm;
         margin: 14px auto;
-        padding: 2.5mm 4.5mm;
+        padding: 2mm 3mm;
         background: #ffffff;
         box-shadow: 0 8px 25px rgba(0,0,0,0.18);
     }
@@ -3446,9 +3499,12 @@ ${headStyles}
         grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
         gap: 2.5mm !important;
     }
-    .f4-sheet-page .lg\\:col-span-5 { grid-column: span 5 / span 5 !important; }
-    .f4-sheet-page .lg\\:col-span-6 { grid-column: span 6 / span 6 !important; }
-    .f4-sheet-page .lg\\:col-span-7 { grid-column: span 7 / span 7 !important; }
+    .f4-sheet-page .lg\\:grid-cols-12.items-start {
+        grid-template-columns: 36% minmax(0, 1fr) !important;
+    }
+    .f4-sheet-page .lg\\:col-span-5 { grid-column: 1 / 2 !important; }
+    .f4-sheet-page .lg\\:col-span-6 { grid-column: span 8 / span 8 !important; }
+    .f4-sheet-page .lg\\:col-span-7 { grid-column: 2 / 3 !important; }
     .f4-sheet-page .overflow-x-auto { overflow: visible !important; }
     .f4-sheet-page .check-box-cell {
         min-height: 0 !important;
@@ -3460,22 +3516,22 @@ ${headStyles}
         line-height: 1.15 !important;
     }
     .f4-sheet-page .space-y-3 > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 1.8mm !important;
+        margin-top: 1.6mm !important;
     }
     .f4-sheet-page .space-y-2\\.5 > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 1.5mm !important;
+        margin-top: 1.4mm !important;
     }
     .f4-sheet-page .space-y-1\\.5 > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 1mm !important;
+        margin-top: 0.9mm !important;
     }
-    .f4-sheet-page .mb-2\\.5 { margin-bottom: 1.4mm !important; }
+    .f4-sheet-page .mb-2\\.5 { margin-bottom: 1.3mm !important; }
     .f4-sheet-page .mb-12 { margin-bottom: 6mm !important; }
     .f4-sheet-page .mt-4 { margin-top: 2mm !important; }
     .f4-sheet-page .f4-signature-block {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 12mm !important;
-        margin-top: 2.2mm !important;
+        margin-top: 2mm !important;
         font-size: 7.5pt !important;
         line-height: 1.2 !important;
     }
@@ -3483,25 +3539,50 @@ ${headStyles}
         width: 100%;
         table-layout: fixed;
         border-collapse: collapse;
-        font-size: 6pt !important;
+        font-size: 5.9pt !important;
     }
     .f4-sheet-page .piket-table th,
     .f4-sheet-page .piket-table td {
+        min-width: 0 !important;
         border: 0.7pt solid #000000 !important;
-        padding: 0.25mm 0.55mm !important;
+        padding: 0.25mm 0.35mm !important;
         line-height: 1.02 !important;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    .f4-sheet-page .siswa-nama.siswa-display-cell,
+    .f4-sheet-page #tabelSiswa1 th,
+    .f4-sheet-page #tabelSiswa2 th {
+        font-size: 5.6pt !important;
+        padding: 0.22mm 0.22mm !important;
+    }
+    .f4-sheet-page #tabelSiswa1 td,
+    .f4-sheet-page #tabelSiswa2 td {
+        padding: 0.22mm 0.25mm !important;
+    }
+    .f4-sheet-page td.siswa-nama-cell,
+    .f4-sheet-page td:has(.siswa-nama),
+    .f4-sheet-page .siswa-nama.siswa-display-cell {
+        max-width: none !important;
+        font-size: 5.3pt !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        line-height: 1.04 !important;
+    }
     .f4-sheet-page .siswa-ket.siswa-display-cell {
         max-width: none !important;
-        font-size: 5.8pt !important;
+        font-size: 5.5pt !important;
+    }
+    .f4-sheet-page tr.bg-gray-50 td {
+        white-space: nowrap !important;
+        font-size: 5.4pt !important;
     }
 
     @media print {
         html, body {
+            width: 100% !important;
             background: #ffffff !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -3518,11 +3599,14 @@ ${headStyles}
             break-after: page !important;
         }
         .f4-sheet-page {
-            margin: 0 !important;
-            box-shadow: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
             min-height: 0 !important;
-            height: 214.5mm !important;
-            overflow: hidden !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 1.5mm !important;
+            box-shadow: none !important;
+            overflow: visible !important;
         }
     }
 </style>
@@ -3543,7 +3627,7 @@ ${headStyles}
             if (!inner) return;
             inner.style.zoom = '1';
             var mmToPx = 96 / 25.4;
-            var maxInnerPx = 205 * mmToPx;
+            var maxInnerPx = 197 * mmToPx;
             var naturalH = inner.scrollHeight;
             if (naturalH > maxInnerPx && naturalH > 0) {
                 var ratio = maxInnerPx / naturalH;
